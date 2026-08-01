@@ -83,8 +83,8 @@ local function CreateRow(name, defaultText, layoutOrder)
     return Row
 end
 
-local EarnedGemsLabel = CreateRow("EarnedGems", "Total Earned: <font color='#FFDF00'>0 Gems</font>", 1)
-local MatchGemsLabel  = CreateRow("MatchGems", "Last Reward: <font color='#D4AF37'>0 Gems</font>", 2)
+local EarnedCoinsLabel = CreateRow("EarnedCoins", "Total Earned: <font color='#FFDF00'>0 Coins</font>", 1)
+local MatchCoinsLabel  = CreateRow("MatchCoins", "Last Reward: <font color='#D4AF37'>0 Coins</font>", 2)
 local EarnedXpLabel   = CreateRow("EarnedXP", "Total Exp: <font color='#2ECC71'>0 XP</font>", 3)
 local MatchXpLabel    = CreateRow("MatchXP", "Last Reward: <font color='#27AE60'>0 XP</font>", 4)
 local PlaytimeLabel   = CreateRow("Playtime", "Total Playtime: <font color='#5DADE2'>0:00</font>", 5)
@@ -272,7 +272,7 @@ UserInputService.InputChanged:Connect(function(input)
     if input == dragInput and dragging then update(input) end
 end)
 
-local SessionGems, SessionXP, TotalSeconds = 0, 0, 0
+local SessionCoins, SessionXP, TotalSeconds = 0, 0, 0
 local LastMatchState = false
 
 task.spawn(function()
@@ -336,20 +336,20 @@ RunService.Heartbeat:Connect(function()
             
             if not RewardsSection then return end
             
-            local containerGems = RewardsSection:FindFirstChild("2")
+            local containerCoins = RewardsSection:FindFirstChild("2")
             local containerXP = RewardsSection:FindFirstChild("1")
             
-            local gemLabelObj = containerGems and containerGems:FindFirstChild("icon") and containerGems.icon:FindFirstChild("icon") and containerGems.icon.icon:FindFirstChild("textLabel")
+            local coinLabelObj = containerCoins and containerCoins:FindFirstChild("icon") and containerCoins.icon:FindFirstChild("icon") and containerCoins.icon.icon:FindFirstChild("textLabel")
             local xpLabelObj = containerXP and containerXP:FindFirstChild("icon") and containerXP.icon:FindFirstChild("icon") and containerXP.icon.icon:FindFirstChild("textLabel")
             
-            local parsedGems = 0
+            local parsedCoins = 0
             local parsedXP = 0
             
-            -- FIX: Standardized the Gem text extraction with ExtractNumber
-            if gemLabelObj then
-                local text = gemLabelObj.Text:lower()
-                if text:find("gems") or text:find("gem") then
-                    parsedGems = ExtractNumber(gemLabelObj.Text)
+            -- FIX: Standardized the Coin text extraction with ExtractNumber
+            if coinLabelObj then
+                local text = coinLabelObj.Text:lower()
+                if text:find("coins") or text:find("coin") then
+                    parsedCoins = ExtractNumber(coinLabelObj.Text)
                 end
             end
             
@@ -357,11 +357,11 @@ RunService.Heartbeat:Connect(function()
                 parsedXP = ExtractNumber(xpLabelObj.Text)
             end
             
-            SessionGems = SessionGems + parsedGems
+            SessionCoins = SessionCoins + parsedCoins
             SessionXP = SessionXP + parsedXP
             
-            MatchGemsLabel.Text = string.format("Last Reward: <font color='#D4AF37'>%d Gems</font>", parsedGems)
-            EarnedGemsLabel.Text = string.format("Total Earned: <font color='#FFDF00'>%d Gems</font>", SessionGems)
+            MatchCoinsLabel.Text = string.format("Last Reward: <font color='#D4AF37'>%d Coins</font>", parsedCoins)
+            EarnedCoinsLabel.Text = string.format("Total Earned: <font color='#FFDF00'>%d Coins</font>", SessionCoins)
             
             MatchXpLabel.Text = string.format("Last Reward: <font color='#27AE60'>%d XP</font>", parsedXP)
             EarnedXpLabel.Text = string.format("Total Exp: <font color='#2ECC71'>%d XP</font>", SessionXP)
